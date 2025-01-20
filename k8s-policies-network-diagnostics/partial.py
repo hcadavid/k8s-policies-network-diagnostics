@@ -64,7 +64,7 @@ def partial(
     print(f'V6-proxy status :{f"REACHABLE at {proxy_host}:{proxy_port}" if proxy_rechable else f"DISABLED or unreachable at {proxy_host}:{proxy_port}"}')    
 
     print(f'Waiting {sleep_time} seconds before finishing the job.')
-    time.sleep(sleep_time)
+    time.sleep(int(sleep_time))
 
     return json.dumps({
         "proxy":f'{proxy_host}:{proxy_port}',
