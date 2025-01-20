@@ -1,15 +1,16 @@
 import argparse
 import csv
 import time
-import platform
-import socket
 import requests
 import psutil
 import os
 from typing import Any
 import json
-from vantage6.algorithm.tools.util import info, warn, error
+import socket
+import platform
+import dns.resolver
 
+from vantage6.algorithm.tools.util import info, warn, error
 
 
 def get_ip_addresses(family):
@@ -19,24 +20,94 @@ def get_ip_addresses(family):
                 yield (interface, snic.address)
 
 
+def is_proxy_reachable(host: str, port: int):
+    try:
+        info(f"Checking if the FQDN of the node proxy ({host}:{str(port)}) can be resolved... ")
+
+        ipaddr = socket.gethostbyname(host) 
+        
+        info(f"FQDN of the node proxy ({host}:{str(port)}) resolved as {ipaddr}... ")
+        
+        # Set timeout before creating connection
+        socket.setdefaulttimeout(5)  # Set default timeout
+        
+        # Check if the port is listening
+        sock = socket.create_connection((ipaddr, port))
+        
+        info(f"Port {port} can be opened on the proxy ({host}) IP address: {ipaddr}")
+        return True
+    
+    except socket.gaierror:
+        info(f"Unreachable proxy: FQDN could not be resolved")
+        return False
+    except ConnectionRefusedError:
+        info(f"Unreachable proxy: Connection refused on port {port}")
+        return False
+    except socket.timeout:
+        info(f"Unreachable proxy: timeout occurred while trying to connecting to port {port}")
+        return False
+    except Exception as e:
+        info(f"Unreachable proxy: Unexpected error: {str(e)}")
+        return False
+    
+    finally:
+        # Reset timeout after connection attempt
+        socket.setdefaulttimeout(None)
+
+
 def is_proxy_reachable(host:str,port:int):
     try:
-        info(f"Checking if the node proxy ({host}:{str(port)}) is reachable... ")
-        requests.get(f'http://{host}:{str(port)}', timeout=1)
+        info(f"Checking if the FQDN of the node proxy ({host}:{str(port)}) can be resolved... ")
+        ipaddr = socket.gethostbyname("v6proxy-subdomain.v6-jobs.svc.cluster.local") 
+        info(f"FQDN of the node proxy ({host}:{str(port)}) resolved as {ipaddr}... ")    
+
+        # Check if the port is listening
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        result = sock.connect_ex((ipaddr, port))
+        
+        if result == 0:
+            info(f"Port {port} is open on IP address {ipaddr}")
+            return True
+        else:
+            info(f"Port {port} is closed on IP address {ipaddr}")
+            return False
+
+
         return True
-    except requests.exceptions.RequestException:
+    except socket.gaierror:
         return False
 
 
 def is_internet_reachable():
     try:
-        info(f"Testing if internet IP addressess are rechable... ")
-        requests.get('https://8.8.8.8', timeout=1)
-        info(f"Testing if internet domain names addressess are solved... ")
-        requests.get('https://www.google.com', timeout=1)
-        return True
-    except requests.exceptions.RequestException:
+        # Attempt to connect to Google's DNS server
+        dns_server = "8.8.8.8"
+        port = 53
+        
+        # Create a UDP socket
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        
+        # Set timeout to avoid hanging indefinitely
+        sock.settimeout(5)
+        
+        # Try to send a packet to the DNS server
+        result = sock.connect_ex((dns_server, port))
+        
+        # Close the socket
+        sock.close()
+        
+        # If connection was successful, return True
+        if result == 0:
+            print(f"Internet access detected on {platform.node()}")
+            return True
+        else:
+            print(f"Internet not reachable on {platform.node()}")
+            return False
+    
+    except socket.error as e:
+        print(f"Connection error (can't determine Internet connection status): {e}")
         return False
+
 
 
 def partial(

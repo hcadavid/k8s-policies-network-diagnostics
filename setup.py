@@ -24,7 +24,8 @@ setup(
     install_requires=[
         'vantage6-algorithm-tools',
         'pandas',
-        'psutil'
+        'psutil',
+        'dnspython'
     ]
 )
 
