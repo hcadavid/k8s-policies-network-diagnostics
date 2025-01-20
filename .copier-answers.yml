@@ -1,0 +1,33 @@
+# DO NOT MODIFY THIS FILE MANUALLY.
+# This file contains the answers to the questions asked by the
+# v6-algorithm-template-creator (using the Copier package). The answers will
+# be updated if you re-run the template creator. Also, the answers in this file
+# may be used to submit your algorithm to a vantage6 algorithm store.
+_commit: 4.8.2
+_src_path: gh:vantage6/v6-algorithm-template.git
+advanced: true
+algorithm_description: Algorithm for diagnosing the current network policies of a
+    k8s-based vantage6 node
+algorithm_name: k8s-policies-network-diagnostics
+author: Héctor Cadavid
+central_args:
+- arg1
+central_function_client: true
+central_function_data: false
+central_function_name: central
+copyright: ''
+docker_image: harbor2.vantage6.ai/k8s-policies-network-diagnostics
+docker_registry: harbor2.vantage6.ai
+has_central_function: true
+has_docs: true
+has_gh_pipeline: true
+has_partial_function: true
+open_source_license: apache
+partial_args:
+- arg1
+partial_function_client: false
+partial_function_data: false
+partial_function_name: partial
+private_registry: true
+project_name: k8s-policies-network-diagnostics
+use_vpn: false

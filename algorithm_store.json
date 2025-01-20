@@ -1,0 +1,36 @@
+{
+  "name": "k8s-policies-network-diagnostics",
+  "image": "harbor2.vantage6.ai/k8s-policies-network-diagnostics",
+  "vantage6_version": "4.6",
+  "code_url": "https://mygitrepo.org",
+  "documentation_url": "",
+  "partitioning": "horizontal",
+  "functions": [
+    {
+      "name": "central",
+      "description": "Algorithm for diagnosing the current network policies of a k8s-based vantage6 node",
+      "type": "central",
+      "databases": [],
+      "arguments": [
+        {
+          "name": "arg1",
+          "type": "",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "partial",
+      "description": "",
+      "type": "federated",
+      "databases": [],
+      "arguments": [
+        {
+          "name": "arg1",
+          "type": "",
+          "description": ""
+        }
+      ]
+    }
+  ]
+}

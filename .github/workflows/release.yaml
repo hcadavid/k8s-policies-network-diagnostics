@@ -1,0 +1,34 @@
+name: Create Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create-docker-image:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout GitHub Action
+      uses: actions/checkout@main
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{github.actor}}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Run Makefile Rule
+      run: |
+        COMMIT_HASH=${{ github.sha }}
+        IMAGE_NAME="ghcr.io/bdh-generalization/k8s-policies-network-diagnostics:${COMMIT_HASH}"
+        docker build -t "${IMAGE_NAME}" .
+
+    - name: Push Docker image
+      run: |
+        COMMIT_HASH=${{ github.sha }}
+        IMAGE_NAME="ghcr.io/bdh-generalization/k8s-policies-network-diagnostics:${COMMIT_HASH}"
+        docker push "${IMAGE_NAME}"
+
