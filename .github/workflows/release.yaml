@@ -23,12 +23,12 @@ jobs:
     - name: Run Makefile Rule
       run: |
         COMMIT_HASH=${{ github.sha }}
-        IMAGE_NAME="ghcr.io/hcadavid/k8s-policies-network-diagnostics:${COMMIT_HASH}"
+        IMAGE_NAME="ghcr.io/hcadavid/k8s-policies-network-diagnostics:latest"
         docker build -t "${IMAGE_NAME}" .
 
     - name: Push Docker image
       run: |
         COMMIT_HASH=${{ github.sha }}
-        IMAGE_NAME="ghcr.io/hcadavid/k8s-policies-network-diagnostics:${COMMIT_HASH}"
+        IMAGE_NAME="ghcr.io/hcadavid/k8s-policies-network-diagnostics:latest"
         docker push "${IMAGE_NAME}"
 
