@@ -32,7 +32,7 @@ def is_proxy_reachable(host: str, port: int):
         socket.setdefaulttimeout(5)  # Set default timeout
         
         # Check if the port is listening
-        sock = socket.create_connection((ipaddr, port))
+        sock = socket.create_connection((ipaddr, int(port)))
         
         info(f"Port {port} can be opened on the proxy ({host}) IP address: {ipaddr}")
         return True
@@ -63,7 +63,7 @@ def is_proxy_reachable(host:str,port:int):
 
         # Check if the port is listening
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        result = sock.connect_ex((ipaddr, port))
+        result = sock.connect_ex((ipaddr, int(port)))
         
         if result == 0:
             info(f"Port {port} is open on IP address {ipaddr}")
