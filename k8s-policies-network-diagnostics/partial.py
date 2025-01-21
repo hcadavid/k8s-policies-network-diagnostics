@@ -90,11 +90,11 @@ def check_http_connection():
             # If the request was successful, return True
             return response.status_code == 200
         except requests.RequestException as e:
-            print(f"Error checking HTTP connection: {e}")
+            print(f"HTTP connection failed: {e}")
             return False
 
 
-def is_internet_reachable():
+def external_dns_reachable():
     try:
         # Attempt to connect to Google's DNS server
         dns_server = "8.8.8.8"
@@ -144,8 +144,8 @@ def partial(
     for interface, ipv6 in ipv6s:
         print(f"{interface}: {ipv6}")
 
-    internet_reachable = is_internet_reachable()
-    print(f'Internet access (socket connection test) :{"ENABLED" if internet_reachable else "DISABLED"}')    
+    external_dns_enabled = external_dns_reachable()
+    print(f'External DNS reachable (socket connection to port 53 test) :{"ENABLED" if external_dns_reachable else "DISABLED"}')    
 
     http_outbound_connection = check_http_connection()
     print(f'Internet access (http connection test) :{"ENABLED" if http_outbound_connection else "DISABLED"}')    
@@ -158,7 +158,7 @@ def partial(
 
     return {
         "proxy":f'{proxy_host}:{proxy_port}',
-        "internet_reachable":internet_reachable,
+        "external_dns_reachable":external_dns_enabled,
         "http_connection_test_passed":http_outbound_connection,
         "proxy_reachable":proxy_rechable,
         "ipv4s_addresses":ipv4s,
