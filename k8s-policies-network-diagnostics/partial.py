@@ -137,10 +137,10 @@ def partial(
     print(f'Waiting {sleep_time} seconds before finishing the job.')
     time.sleep(int(sleep_time))
 
-    return json.dumps({
+    return {
         "proxy":f'{proxy_host}:{proxy_port}',
         "internet_reachable":internet_reachable,
         "proxy_reachable":proxy_rechable,
         "ipv4s_addresses":ipv4s,
         "ipv6s_addresses":ipv6s
-    })
+    }
